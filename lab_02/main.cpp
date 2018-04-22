@@ -2,13 +2,12 @@
 #include <iostream>
 #include "matrix.h"
 
+//Добавить *=  для числа
+//Добавить * для числа
+//Уместен ли здесь итерратор??(нет)
+
 int main(void)
 {
-
-    Matrix<int> matrix(3,5,4);
-    if(matrix[0][4] == 4)
-        std::cout << "ok";
-
     {//TESTS FOR OPERATOR =
 
         int m = 3;
@@ -80,22 +79,6 @@ int main(void)
         if(check == 1)
             errors += 1;
 
-
-//        int m3 = 4;
-//        int n3 = 5;
-
-//        int m4 = 2;
-//        int n4 = 5;
-
-//        check = 0;
-
-//        Matrix<int> matrix6(m3,n3,2);
-
-//        Matrix<int> matrix7(m4,n4);
-
-//        matrix6 = matrix7;
-
-
         std::cout << "Passing test(s) " << 3 - errors << " from " << 3 << " (OPERATORS =)\n";
 
     }
@@ -108,8 +91,8 @@ int main(void)
         int check = 0;
         int errors = 0;
 
-        int enter1[m][n] = {{10,20,30},{40,50,60},{70,80,90}};
-        int real[m][n] = {{0,10,20},{30,40,50},{60,70,80}};
+        int enter1[3][3] = {{10,20,30},{40,50,60},{70,80,90}};
+        int real[][3] = {{0,10,20},{30,40,50},{60,70,80}};
 
         Matrix<int> matrix1(m,n);
 
@@ -139,8 +122,8 @@ int main(void)
 
         check = 0;
 
-        int enter2[m2][n2] = {{10,20,30,40},{50,60,70,80}};
-        int real2[m2][n2] = {{0,10,20,30},{40,50,60,70}};
+        int enter2[2][4] = {{10,20,30,40},{50,60,70,80}};
+        int real2[2][4] = {{0,10,20,30},{40,50,60,70}};
 
         Matrix<int> matrix3(m2,n2);
 
@@ -268,7 +251,47 @@ int main(void)
         if(check == 1)
             errors += 1;
 
-        std::cout << "Passing test(s) " << 2 - errors << " from " << 2 << " (OPERATORS *)\n";
+        check = 0;
+
+        Matrix<int> matrix5(m,n,4);
+
+        Matrix<int> result3(m,n);
+
+        result3 = matrix5 * 4;
+
+        for(int i = 0; i < m; i++)
+        {
+            for(int j = 0; j < n; j++)
+            {
+                if(result3[i][j] != 16)
+                    check = 1;
+            }
+        }
+
+        if(check == 1)
+            errors += 1;
+
+
+        check = 0;
+
+        Matrix<int> matrix6(m,n,4);
+
+        matrix6 *= 4;
+
+        for(int i = 0; i < m; i++)
+        {
+            for(int j = 0; j < n; j++)
+            {
+                if(matrix6[i][j] != 16)
+                    check = 1;
+            }
+        }
+
+        if(check == 1)
+            errors += 1;
+
+
+        std::cout << "Passing test(s) " << 4 - errors << " from " << 4 << " (OPERATORS *)\n";
 
     }
 
@@ -280,8 +303,8 @@ int main(void)
         int check = 0;
         int errors = 0;
 
-        int enter1[n][m] = {{1,2,3},{4,5,6},{7,8,9}};
-        int real[n][m] = {{1,2,3},{4,5,6},{7,8,9}};
+        int enter1[3][3] = {{1,2,3},{4,5,6},{7,8,9}};
+        int real[3][3] = {{1,2,3},{4,5,6},{7,8,9}};
 
         Matrix<int> matrix1(m,n);
 
@@ -311,9 +334,9 @@ int main(void)
         int check = 0;
         int errors = 0;
 
-        int enter1[n][m] = {{1,2,3},{4,5,6},{7,8,9}};
-        int enter2[n][m] = {{10,11,12},{13,14,15},{16,17,18}};
-        int real[n][m] = {{11,13,15},{17,19,21},{23,25,27}};
+        int enter1[3][3] = {{1,2,3},{4,5,6},{7,8,9}};
+        int enter2[3][3] = {{10,11,12},{13,14,15},{16,17,18}};
+        int real[3][3] = {{11,13,15},{17,19,21},{23,25,27}};
 
         Matrix<int> matrix1(m,n);
 
@@ -416,7 +439,7 @@ int main(void)
         int n = 3;
         int errors = 0;
 
-        int enter1[m][n] = {{1,2,3},{4,5,6},{7,8,9}};
+        int enter1[3][3] = {{1,2,3},{4,5,6},{7,8,9}};
 
         Matrix<int> matrix1(m,n);
 

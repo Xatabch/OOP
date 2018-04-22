@@ -4,6 +4,7 @@
 #include <memory>
 #include <stdexcept>
 #include <iostream>
+#include <typeinfo>
 
 template<typename T>
 class Matrix
@@ -264,15 +265,8 @@ std::ostream &operator <<(std::ostream &stream, const Matrix<Type> &matrix)
     return stream;
 }
 
-
 template<typename T>
-std::unique_ptr<T[]> &Matrix<T>::operator[](size_t index)
-{
-    if(index < 0 || index >= rows || index >= columns)
-        throw std::range_error("Index error\n");
-
-    return matrix[index];
-}
+std::unique_ptr<T[]> &Matrix<T>::operator[](size_t index){return matrix[index];}
 
 
 template<typename T>
