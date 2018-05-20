@@ -31,7 +31,7 @@ private:
     int max_floor; // максимальное количество этажей
     int min_floor; // минимальное количество этажей
     std::vector<int> floor_array; // множество этажей
-    static const int del;
+    static const int del; // задержка в развитии(моя))))))9999000()0()а89)0);(09)9)())()))))
     doors *door; // двери
 
 public slots:
@@ -47,19 +47,19 @@ public slots:
     void wait(); // метод переводит объект лифт в состояние "ждуна")0)(death time 1:03)
     void handler(); // обработчик множества этажей
     void add_floor(int floor); // добавляет в множество "этаж"
-    void prepare_move();
+    void prepare_move(); //
 
 private slots:
     void delete_floor();
 
 signals:
-    void prepared();
+    void prepared(); // событие готов
     void up(); // событие движения вверх
     void down(); // событие движения вниз
-    void opening_doors();
-    void closing_doors();
+    void opening_doors(); // событие двери открываются
+    void closing_doors(); // событие двери закрываются
     void arrived(); // событие прибытия лифта на нужный этаж
-    void floor_is_deleted();
+    void floor_is_deleted(); // событие этаж удален из списка вызванных этажей
 };
 
 #endif // LIFT_H

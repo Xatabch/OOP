@@ -1,6 +1,6 @@
 #include "lift.h"
 
-const int lift::del = 1000;
+const int lift::del = 2000;
 
 lift::lift(QObject *parent):QObject(parent)
 {
@@ -11,14 +11,12 @@ lift::lift(QObject *parent):QObject(parent)
     this->min_floor = 1;
     this->current_floor = 1;
     door = new doors(this);
-    connect(this, SIGNAL(arrived()), door, SLOT(open()));
-    connect(this, SIGNAL(arrived()), this, SLOT(delete_floor()));
-    connect(this, SIGNAL(floor_is_deleted()), this, SLOT(handler()));
-    connect(door, SIGNAL(opening_doors()), this, SLOT(wait()));
-    connect(door, SIGNAL(closing_doors()), this, SLOT(go_to()));
-    connect(this, SIGNAL(prepared()), this, SLOT(wait()));
-   // connect(this, SIGNAL(closing_doors()), door, SLOT(close()));
-   // connect(this, SIGNAL(opening_doors()), door, SLOT(open()));
+    connect(this, SIGNAL(arrived()), this/*door*/, SLOT(open_doors())/*SLOT(open())*/); // сигнал вызывает метод открытия дверей объекта двери
+    connect(this, SIGNAL(arrived()), this, SLOT(delete_floor())); // сигнал вызывает метод удаления "этажа" из списка этажей объекта лифт
+    connect(this, SIGNAL(floor_is_deleted()), this, SLOT(handler())); // сигнал вызывает метод обработки множества этажей объекта лифт
+    connect(door, SIGNAL(opening_doors()), this, SLOT(wait())); // сигнал вызывает метод ожидания объекта лифт
+    connect(door, SIGNAL(closing_doors()), this, SLOT(go_to())); // сигнал вызывает метод движения объекта лифт
+    connect(this, SIGNAL(prepared()), this, SLOT(wait())); // сигнал вызвает метод ожидания объекта лифт
     connect(this, SIGNAL(up()), this, SLOT(go_up())); // сигнал вызывает метод движения лифта вверх объекта лифт
     connect(this, SIGNAL(down()), this, SLOT(go_down())); // сигнал вызывает метод движения лифта вниз объекта лифт
 }
@@ -35,6 +33,7 @@ void lift::delete_floor()
 
 void lift::go_up() // метод движения вверх, порождает событие движения вверх и переводит объект в состояние going_up_state
 {
+    //std::cout << this->state << std::endl;
     if(!check_floor())
     {
         delay(del, [this]
@@ -93,29 +92,21 @@ void lift::go_to()
     if(this->floor > this->current_floor)
     {
         delay
-        (
-            del,
-            [this]
-            {
-                set_state(going_down_state);
-                this->go_down();
-            },
-            this
-        );
+        (del, [this]
+        {
+            set_state(going_down_state);
+            this->go_down();
+        }, this);
 
     }
     else if(this->floor < this->current_floor)
     {
         delay
-        (
-            del,
-            [this]
-            {
-                set_state(going_up_state);
-                this->go_up();
-            },
-            this
-        );
+        (del, [this]
+        {
+             set_state(going_up_state);
+             this->go_up();
+        }, this);
     }
 }
 
@@ -128,29 +119,30 @@ void lift::add_floor(int floor) // добавляет в множество "э�
 
 void lift::wait()
 {
-    set_state(wait_state);
-    std::cout << "Перешел в состояние ожидания..." << std::endl;
-    delay(del, [this] { close_doors(); }, this);
+    if(this->state != going_up_state && this->state != going_down_state)
+    {
+        set_state(wait_state);
+        std::cout << "Перешел в состояние ожидания..." << std::endl;
+        delay(del, [this] { close_doors(); }, this);
+    }
 }
 
 void lift::open_doors()
 {
     set_state(opening_doors_state);
     door->open();
-    //emit this->opening_doors();
 }
 
 void lift::close_doors()
 {
     set_state(closing_doors_state);
     door->close();
-    //emit this->closing_doors();
 }
 
 
-void lift::prepare_move()
+void lift::prepare_move() // состояние подготовлен к движению
 {
-    if(this->state == wait_state)
+    if(this->state == wait_state || this->state == closing_doors_state)
         open_doors();
     else
         emit prepared();

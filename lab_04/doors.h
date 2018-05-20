@@ -20,7 +20,7 @@ public:
 
 private:
     doors_states state; // состояние
-    static const int del;
+    static const int del; // задержка, ну вы поняли)
 
 public slots:
     void open(); // метод открывает двери и порождает событие откывающиеся двери и переводит объект двери в состояние открыты
