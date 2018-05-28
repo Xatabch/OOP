@@ -31,7 +31,7 @@ private:
     int max_floor; // максимальное количество этажей
     int min_floor; // минимальное количество этажей
     std::vector<int> floor_array; // множество этажей
-    static const int del; // задержка в развитии(моя))))))9999000()0()а89)0);(09)9)())()))))
+    static const int DEL; // задержка в развитии(моя))))))9999000()0()а89)0);(09)9)())()))))
     doors *door; // двери
 
 public slots:
@@ -48,6 +48,10 @@ public slots:
     void handler(); // обработчик множества этажей
     void add_floor(int floor); // добавляет в множество "этаж"
     void prepare_move(); //
+    void step_up_floor();
+    void step_down_floor();
+    void set_down_state();
+    void set_up_state();
 
 private slots:
     void delete_floor();

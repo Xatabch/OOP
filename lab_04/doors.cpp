@@ -1,6 +1,6 @@
 #include "doors.h"
 
-const int doors::del = 2000;
+const int doors::DEL = 500;
 
 doors::doors(QObject *parent):QObject(parent)
 {
@@ -10,20 +10,30 @@ doors::doors(QObject *parent):QObject(parent)
 
 void doors::open()
 {
-    std::cout << "Двери открываются..." << std::endl;
-    this->state = open_state;
-    delay(del);
-    std::cout << "Двери открыты..." << std::endl;
-    emit this->opening_doors();
+    if(this->state != open_state)
+    {
+        std::cout << "Двери открываются..." << std::endl;
+        this->state = open_state;
+        delay(DEL);
+        std::cout << "Двери открыты..." << std::endl;
+        emit this->opening_doors();
+    }
+    else
+        delay(DEL);
 
 }
 
 
 void doors::close()
 {
-    std::cout << "Двери закрываются..." << std::endl;
-    this->state = close_state;
-    delay(del);
-    std::cout << "Двери закрыты..." << std::endl;
-    emit this->closing_doors();
+    if(this->state != close_state)
+    {
+        std::cout << "Двери закрываются..." << std::endl;
+        this->state = close_state;
+        delay(DEL);
+        std::cout << "Двери закрыты..." << std::endl;
+        emit this->closing_doors();
+    }
+    else
+        delay(DEL);
 }

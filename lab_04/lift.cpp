@@ -1,6 +1,6 @@
 #include "lift.h"
 
-const int lift::del = 2000;
+const int lift::DEL = 2000;
 
 lift::lift(QObject *parent):QObject(parent)
 {
@@ -31,33 +31,37 @@ void lift::delete_floor()
     emit this->floor_is_deleted();
 }
 
+void lift::step_up_floor()
+{
+    this->floor += 1;
+    std::cout << "Передвинулся на этаж " << floor << std::endl;
+    emit this->up();
+}
+
 void lift::go_up() // метод движения вверх, порождает событие движения вверх и переводит объект в состояние going_up_state
 {
-    //std::cout << this->state << std::endl;
     if(!check_floor())
     {
-        delay(del, [this]
-        {
-            this->floor += 1;
-            std::cout << "Передвинулся на этаж " << floor << std::endl;
-            emit this->up();
-        }, this);
+        delay(DEL);
+        step_up_floor();
     }
     else
         emit this->arrived();
 }
 
+void lift::step_down_floor()
+{
+    this->floor -= 1;
+    std::cout << "Передвинулся на этаж " << floor << std::endl;
+    emit this->down();
+}
 
 void lift::go_down() // метод движения вниз, порождает событие движения вниз и переводит объект в состояние going_down_state
 {
     if(!check_floor())
     {
-        delay(del, [this]
-        {
-            this->floor -= 1;
-            std::cout << "Передвинулся на этаж " << floor << std::endl;
-            emit this->down();
-        }, this);
+        delay(DEL);
+        step_down_floor();
     }
     else
         emit this->arrived();
@@ -87,26 +91,30 @@ void lift::handler() // обработчик множества этажей
     prepare_move();
 }
 
+void lift::set_down_state()
+{
+    set_state(going_down_state);
+    this->go_down();
+}
+
+void lift::set_up_state()
+{
+    set_state(going_up_state);
+    this->go_up();
+}
+
 void lift::go_to()
 {
     if(this->floor > this->current_floor)
     {
-        delay
-        (del, [this]
-        {
-            set_state(going_down_state);
-            this->go_down();
-        }, this);
+        delay(DEL);
+        set_down_state();
 
     }
     else if(this->floor < this->current_floor)
     {
-        delay
-        (del, [this]
-        {
-             set_state(going_up_state);
-             this->go_up();
-        }, this);
+        delay(DEL);
+        set_up_state();
     }
 }
 
@@ -123,20 +131,27 @@ void lift::wait()
     {
         set_state(wait_state);
         std::cout << "Перешел в состояние ожидания..." << std::endl;
-        delay(del, [this] { close_doors(); }, this);
+        delay(DEL);
+        close_doors();
     }
 }
 
 void lift::open_doors()
 {
-    set_state(opening_doors_state);
-    door->open();
+    if(this->state != opening_doors_state)
+    {
+        set_state(opening_doors_state);
+        door->open();
+    }
 }
 
 void lift::close_doors()
 {
-    set_state(closing_doors_state);
-    door->close();
+    if(this->state != closing_doors_state)
+    {
+        set_state(closing_doors_state);
+        door->close();
+    }
 }
 
 
